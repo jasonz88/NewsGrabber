@@ -5,14 +5,14 @@ xmlhttp.onreadystatechange = function() {
     if (XMLHttpRequest.DONE == xmlhttp.readyState) {
         if(200 == xmlhttp.status && xmlhttp.readyState==4) {
           var vv = JSON.parse(xmlhttp.responseText);
-            console.log(vv.response.docs[3].snippet);
+            console.log(vv.response);
         }
         else if (400 == xmlhttp.status) {
-            console.log("feedback submit failed");
+            console.log("failed");
         }
         else {
             console.log(xmlhttp.response);
-            console.log("feedback submit: something else other than 200 was returned");
+            console.log("something else other than 200 was returned");
         }
     }
 }
