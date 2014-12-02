@@ -163,11 +163,14 @@ void MainWindow::finishLoading(bool)
     adjustTitle();
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
 
+    qDebug() << "starting";
+    qDebug() << HTML2Text(view->page()->mainFrame()->toHtml());
+
+        qDebug() << "ending";
 
     QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#searchResults");
-    foreach (QWebElement element, collection)
-    {
-        QWebElementCollection coll = element.findAll("a");
+    QWebElement element = *collection.begin();
+    QWebElementCollection coll = element.findAll("a");
         foreach(QWebElement ele, coll)
         {
             QString href = ele.attribute("href");
@@ -179,13 +182,21 @@ void MainWindow::finishLoading(bool)
                 loop.exec();
                 view->load(href);
             }
+            break;
         }
 
-    }
 
     rotateImages(rotateAction->isChecked());
 }
 //! [6]
+
+QString MainWindow::HTML2Text(const QString &in)
+{
+    int begin = in.indexOf("<nyt_text>");
+    if (-1 == begin) return QString();
+    int end = in.indexOf("</nyt_text>");
+    return in.mid(begin+10,end-begin-10).remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));
+}
 
 //! [7]
 void MainWindow::highlightAllLinks()

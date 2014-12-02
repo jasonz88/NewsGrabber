@@ -70,6 +70,7 @@ protected slots:
     void removeInlineFrames();
     void removeObjectElements();
     void removeEmbeddedElements();
+    QString HTML2Text(const QString &in);
 
 private:
     QString jQuery;
