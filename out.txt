@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/QAPage">
+<head>
+    
+    <title>c++ - How to execute complex linux commands in Qt? - Stack Overflow</title>
+    <link rel="shortcut icon" href="//cdn.sstatic.net/stackoverflow/img/favicon.ico?v=038622610830">
+    <link rel="apple-touch-icon image_src" href="//cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png?v=fd7230a85918">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="/opensearch.xml">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" content="stackoverflow.com"/>
+    <meta property="og:type" content="website" />
+    <meta property="og:image" itemprop="image primaryImageOfPage" content="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon@2.png?v=fde65a5a78c6" />
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="How to execute complex linux commands in Qt?" />
+    <meta name="twitter:description" property="og:description" itemprop="description" content="I want to restart the computer by running a command in linux using QProcess. I have hard-coded my root password in my application.
+
+When i run the following in a terminal it works perfect:
+
+echo my..." />
+    <meta property="og:url" content="http://stackoverflow.com/questions/23322739/how-to-execute-complex-linux-commands-in-qt"/>
+    <link rel="canonical" href="http://stackoverflow.com/questions/23322739/how-to-execute-complex-linux-commands-in-qt" />
+
+    
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="//cdn.sstatic.net/Js/stub.en.js?v=78693712b288"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.sstatic.net/stackoverflow/all.css?v=c8b5e75bb3e2">
+    
+    <script>
+        
+        StackExchange.ready(function () {
+                
+                StackExchange.using("snippets", function () {
+                    StackExchange.snippets.initSnippetRenderer();
+                });
+                
+
+            StackExchange.using("postValidation", function () {
+                StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+            });
+
+            
+            StackExchange.question.init({showAnswerHelp:true,totalCommentCount:0,shownCommentCount:0,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:23322739});
+
+            styleCode();
+
+                StackExchange.realtime.subscribeToQuestion('1', '23322739');
+            
+                    });
+    </script>
+
+
+    <script>
+        StackExchange.init({"locale":"en","stackAuthUrl":"https://stackauth.com","serverTime":1417590925,"networkMetaHostname":"meta.stackexchange.com","routeName":"Questions/Show","styleCode":true,"enableUserHovercards":true,"snippets":{"enabled":true,"domain":"stacksnippets.net"},"site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers","isNoticesTabEnabled":true,"recaptchaPublicKey":"6LdchgIAAAAAAJwGpIzRQSOFaO0pU6s44Xt8aTwc","recaptchaAudioLang":"en","enableNewTagCreationWarning":true,"nonAsciiTags":true,"enableSocialMediaInSharePopup":true},"user":{"fkey":"75fd57e5174185097b419bdf2622861f","isAnonymous":true,"ab":{"search_improvements":{"v":"experiment_2","g":2}}}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.en.js":"e2f749a11422","js/moderator.en.js":"4d25e05d9ee4","js/full-anon.en.js":"7fcba0f54581","js/full.en.js":"32aad22b7e6e","js/wmd.en.js":"7fe63e47be18","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/third-party/jquery.autocomplete.min.en.js":"","js/mobile.en.js":"c3a9cd8918f2","js/help.en.js":"637a173e1aa4","js/tageditor.en.js":"c84618a71b61","js/tageditornew.en.js":"62ef30088b42","js/inline-tag-editing.en.js":"48f13b102998","js/revisions.en.js":"6c7265ea9fa1","js/review.en.js":"24eb4e9c40e3","js/tagsuggestions.en.js":"d1ff9b84abe5","js/post-validation.en.js":"33a52a240c2f","js/explore-qlist.en.js":"257ba4cb7b04","js/events.en.js":"ec597b99206d","js/keyboard-shortcuts.en.js":"289f0a7c43ff","js/external-editor.en.js":"49dac339584c","js/external-editor.en.js":"49dac339584c","js/snippet-javascript.en.js":"d8c36f4563b5","js/snippet-javascript-codemirror.en.js":"5bfa232bf17b"});
+        StackExchange.using("gps", function() {
+             StackExchange.gps.init(true);
+        });
+    </script>
+    
+        <script>
+            StackExchange.ready(function () {
+                $('#nav-tour').click(function () {
+                    StackExchange.using("gps", function() {
+                        StackExchange.gps.track("aboutpage.click", { aboutclick_location: "headermain" }, true);
+                    });
+                });
+            });
+        </script>
+    
+    
+</head>
+<body class="question-page new-topbar">
+    <noscript><div id="noscript-padding"></div></noscript>
+    <div id="notify-container"></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+
+
+
+
+<div class="topbar">
+    <div class="topbar-wrapper">
+
+        <div class="js-topbar-dialog-corral">
+
+<div class="topbar-dialog siteSwitcher-dialog dno">
+    <div class="header">
+        <h3><a href="//stackoverflow.com">current community</a></h3>
+    </div>
+    <div class="modal-content current-site-container">
+        <ul class="current-site">
+                <li>
+                        <div class="related-links">
+            <a href="http://chat.stackoverflow.com" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:6 })"
+>chat</a>
+                    <a href="http://blog.stackoverflow.com" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:7 })"
+>blog</a>
+            </div>
+
+
+
+
+    <a href="//stackoverflow.com"
+       class="current-site-link site-link js-gps-track"
+       data-id="1"
+       data-gps-track="
+        site_switcher.click({ item_type:3 })">
+        <div class="site-icon favicon favicon-stackoverflow" title="Stack Overflow"></div>
+        Stack Overflow
+    </a>
+
+                </li>
+                <li class="related-site">
+                        <div class="L-shaped-icon-container">
+        <span class="L-shaped-icon"></span>
+    </div>
+
+                    
+
+
+
+    <a href="http://meta.stackoverflow.com"
+       class="site-link js-gps-track"
+       data-id="552"
+       data-gps-track="
+            site.switch({ target_site:552, item_type:3 }),
+        site_switcher.click({ item_type:4 })">
+        <div class="site-icon favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+        Meta Stack Overflow
+    </a>
+
+                </li>
+                            <li class="related-site">
+                        <div class="L-shaped-icon-container">
+        <span class="L-shaped-icon"></span>
+    </div>
+
+                    <a class="site-link js-gps-track"
+                       href="//careers.stackoverflow.com?utm_source=stackoverflow.com&utm_medium=site-ui&utm_campaign=multicollider"
+                            data-gps-track="site_switcher.click({ item_type:9 })"
+>
+                        <div class="site-icon favicon favicon-careers" title="Stack Overflow Careers"></div>
+                        Stack Overflow Careers
+                    </a>
+                </li>
+        </ul>
+    </div>
+    
+    <div class="header" id="your-communities-header">
+        <h3>
+your communities        </h3>
+            
+    </div>
+    <div class="modal-content" id="your-communities-section">
+            
+            <div class="call-to-login">
+<a href="https://stackoverflow.com/users/signup?returnurl=http%3a%2f%2fstackoverflow.com%2fquestions%2f23322739%2fhow-to-execute-complex-linux-commands-in-qt" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:10 })"
+>Sign up</a> or <a href="https://stackoverflow.com/users/login?returnurl=http%3a%2f%2fstackoverflow.com%2fquestions%2f23322739%2fhow-to-execute-complex-linux-commands-in-qt" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:11 })"
+>log in</a> to customize your list.
+            </div>
+    </div>
+    
+    <div class="header">
+        <h3><a href="//stackexchange.com/sites">more stack exchange communities</a></h3>
+    </div>
+    <div class="modal-content">
+            <div class="child-content"></div>
+    </div>
+</div>
+        </div>
+
+        <div class="network-items">
+
+            <a href="//stackexchange.com"
+               class="topbar-icon icon-site-switcher yes-hover js-site-switcher-button js-gps-track"
+               data-gps-track="site_switcher.show"
+               title="A list of all 132 Stack Exchange sites">
+                <span class="hidden-text">Stack Exchange</span>
+            </a>
+
+        </div>
+
+        <div class="topbar-links">
+
+                <div class="links-container">
+                    <span class="topbar-menu-links">
+                            <a href="https://stackoverflow.com/users/signup?returnurl=http%3a%2f%2fstackoverflow.com%2fquestions%2f23322739%2fhow-to-execute-complex-linux-commands-in-qt" class="login-link">sign up</a>
+                            <a href="https://stackoverflow.com/users/login?returnurl=http%3a%2f%2fstackoverflow.com%2fquestions%2f23322739%2fhow-to-execute-complex-linux-commands-in-qt" class="login-link">log in</a>
+                            <a href="/tour">tour</a>
+
+                            <a href="#" class="icon-help js-help-button" title="Help Center and other resources">
+        help
+        <span class="triangle"></span>
+    </a>
+    <div class="topbar-dialog help-dialog js-help-dialog dno">
+        <div class="modal-content">
+            <ul>
+                                    <li>
+                        <a href="/tour" class="js-gps-track" data-gps-track="help_popup.click({ item_type:1 })">
+                            Tour
+                            <span class="item-summary">
+                                Start here for a quick overview of the site
+                            </span>
+                        </a>
+                    </li>
+                <li>
+                    <a href="/help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:4 })">
+                        Help Center
+                        <span class="item-summary">
+                            Detailed answers to any questions you might have
+                        </span>
+                    </a>
+                </li>
+                    <li>
+                        <a href="//meta.stackoverflow.com" class="js-gps-track" data-gps-track="help_popup.click({ item_type:2 })">
+                            Meta
+                            <span class="item-summary">
+                                Discuss the workings and policies of this site
+                            </span>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+
+                            <a href="//careers.stackoverflow.com?utm_source=stackoverflow.com&utm_medium=site-ui&utm_campaign=anon-topbar">stack overflow careers</a>
+                    </span>
+                </div>
+
+            <div class="search-container">
+                <form id="search" action="/search" method="get" autocomplete="off">
+                    <input name="q" type="text" placeholder="search" value="" tabindex="1" autocomplete="off" maxlength="240" />
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <script>
+        StackExchange.ready(function() { StackExchange.topbar.init(); });
+    </script>
+
+    <div class="container">
+        <div id="header">
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="/">
+                    Stack Overflow
+                </a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs">
+                    <ul>
+                        <li class="youarehere"><a id="nav-questions" href="/questions">Questions</a></li>
+                        <li><a id="nav-tags" href="/tags">Tags</a></li>
+                        <li><a id="nav-users" href="/users">Users</a></li>
+                        <li><a id="nav-badges" href="/help/badges">Badges</a></li>
+                        <li><a id="nav-unanswered" href="/unanswered">Unanswered</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion"  href="/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+        <div id="content" class="snippet-hidden">
+            
+
+<div itemscope itemtype="http://schema.org/Question">
+	<link itemprop="image" href="//cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+			<!--googleoff: all-->
+
+<div id="herobox-mini">
+    <div id="hero-content">
+        <span id="controls">
+            <a href="/tour" id="tell-me-more" class="button">Take the 2-minute tour</a>
+            <span id="close"><a title="click to dismiss">&times;</a></span>
+        </span>
+        <div id="blurb">
+            Stack Overflow is a question and answer site for professional and enthusiast programmers. It&#39;s 100% free, no registration required.
+        </div>        
+    </div>
+    <script>
+        $('#tell-me-more').click(function () {
+            var clickSource = $("body").attr("class") + '-mini';
+            if ($("body").hasClass("questions-page")) {
+                clickSource = 'questionpagemini';
+            } else if ($("body").hasClass("question-page")) {
+                clickSource = 'questionpagemini';
+            } else if ($("body").hasClass("home-page")) {
+                clickSource = 'homepagemini';
+            }
+
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("aboutpage.click", { aboutclick_location: clickSource } , true);
+            });
+        });
+        $('#herobox-mini #close').click(function () {
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("hero.action", { hero_action_type: "close" }, true);
+            });
+            $.cookie("hero", "none", { path: "/", expires: 365 });
+            var $hero = $("#herobox-mini");
+            $hero.slideUp('fast', function () { $hero.remove(); });
+            return false;
+        });
+    </script>
+</div>
+			<!--googleon: all-->
+			<div id="question-header">
+			<h1 itemprop="name"><a href="/questions/23322739/how-to-execute-complex-linux-commands-in-qt" class="question-hyperlink">How to execute complex linux commands in Qt? [duplicate]</a></h1>
+		</div>
+			<div id="mainbar">
+
+			
+
+<div class="question" data-questionid="23322739"  id="question">
+
+    <script>
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk31941343",4).setZone(43) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk31941343">
+            </div>    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input type="hidden" name="_id_" value="23322739">
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+    <span itemprop="upvoteCount" class="vote-count-post ">3</span>
+    <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+    
+    <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+    <div class="favoritecount"><b></b></div>   
+
+</div>
+
+            </td>
+            
+<td class="postcell">
+<div>
+    <div class="post-text" itemprop="text">
+
+<div class="question-status question-originals-of-duplicate">
+    <p>This question already has an answer here:</p>
+    <ul>
+        <li>
+            <a href="/questions/20901884/pipe-with-qprocess" dir="ltr">Pipe with QProcess</a>
+                <span class="question-originals-answer-count">
+                    3 answers
+                </span>
+        </li>
+    </ul>
+</div>
+        <p>I want to restart the computer by running a command in linux using <code>QProcess</code>. I have hard-coded my root password in my application.</p>
+
+<p>When i run the following in a terminal it works perfect:</p>
+
+<pre><code>echo myPass | sudo -S shutdown -r now 
+</code></pre>
+
+<p>When i put the command in a shell script and call it via <code>QProcess</code> it is also successful :</p>
+
+<pre><code>QProcess process;
+process.startDetached("/bin/sh", QStringList()&lt;&lt; "myScript.sh");
+</code></pre>
+
+<p>But i can not run it by directly passing to <code>QProcess</code>:</p>
+
+<pre><code>process.startDetached("echo myPass | sudo -S shutdown -r now ");
+</code></pre>
+
+<p>It will just print <code>myPass | sudo -S shutdown -r now</code> </p>
+
+<p>How is it possible to run such relatively complex commands directly using <code>QProcess</code>. (Not putting in a shell script).</p>
+
+    </div>
+    <div class="post-taglist">
+        <a href="/questions/tagged/c%2b%2b" class="post-tag" title="show questions tagged 'c++'" rel="tag">c++</a> <a href="/questions/tagged/linux" class="post-tag" title="show questions tagged 'linux'" rel="tag">linux</a> <a href="/questions/tagged/qt" class="post-tag" title="show questions tagged 'qt'" rel="tag">qt</a> <a href="/questions/tagged/shell" class="post-tag" title="show questions tagged 'shell'" rel="tag">shell</a> <a href="/questions/tagged/qprocess" class="post-tag" title="show questions tagged 'qprocess'" rel="tag">qprocess</a> 
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/q/23322739" title="short permalink to this question" class="short-link" id="link-post-23322739">share</a><span class="lsep">|</span><a href="/posts/23322739/edit" class="suggest-edit-post" title="">improve this question</a></div>        
+    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/23322739/revisions" title="show all edits to this post">edited <span title="2014-10-04 10:33:37Z" class="relativetime">Oct 4 at 10:33</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br>
+        
+    </div>
+</div>    </td>
+    <td class="post-signature owner">
+        <div class="user-info user-hover">
+    <div class="user-action-time">
+        asked <span title="2014-04-27 11:21:23Z" class="relativetime">Apr 27 at 11:21</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/3049264/nejat"><div class="gravatar-wrapper-32"><img src="http://i.stack.imgur.com/MNMWc.jpg?s=32&g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/3049264/nejat">Nejat</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">8,943</span><span title="3 gold badges"><span class="badge1"></span><span class="badgecount">3</span></span><span title="14 silver badges"><span class="badge2"></span><span class="badgecount">14</span></span><span title="34 bronze badges"><span class="badge3"></span><span class="badgecount">34</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</div>
+</td>
+        </tr>
+                    <tr>
+            <td class="special-status" colspan="2">
+                <div class="question-status">
+        <h2>                    <b>marked</b> as duplicate by <a href="/users/2682142/lpapp">lpapp</a><span class="voter-history" title="Users with the [c++] gold badge can single-handedly mark [c++] questions as duplicates"><span class="badge1"></span></span> <span dir="ltr"><span title="2014-06-21 06:19:39Z" class="relativetime">Jun 21 at 6:19</span></span>
+</h2>
+        <p>This question has been asked before and already has an answer. If those answers do not fully address your question, please <a href="/questions/ask">ask a new question</a>.</p>
+    </div>
+            </td>
+        </tr>
+    
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-23322739" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+            <div id="comments-link-23322739" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span><a class="js-show-link comments-link dno" title="expand to show all comments on this post, or add one of your own" href=# onclick=""></a>
+            </div>
+    </td>
+</tr>        </table>
+</div>
+
+			<div id="answers">
+
+				<a name="tab-top"></a>
+				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								3 Answers
+                                <span style="display:none;" itemprop="answerCount">3</span>
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="/questions/23322739/how-to-execute-complex-linux-commands-in-qt?answertab=active#tab-top" title="Answers with the latest activity first">active</a>
+        <a href="/questions/23322739/how-to-execute-complex-linux-commands-in-qt?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>
+        <a class="youarehere" href="/questions/23322739/how-to-execute-complex-linux-commands-in-qt?answertab=votes#tab-top" title="Answers with the highest score first">votes</a>
+</div>
+						</div>
+					</div>    
+				</div>    
+
+
+
+
+  
+<a name="23322860"></a>
+<div id="answer-23322860" class="answer accepted-answer" data-answerid="23322860"  itemscope itemtype="http://schema.org/Answer" itemprop="acceptedAnswer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input type="hidden" name="_id_" value="23322860">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span itemprop="upvoteCount" class="vote-count-post ">4</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+        <span class="vote-accepted-on load-accepted-answer-date" title="loading when this answer was accepted...">accepted</span>
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>The key methods that exist for this purpose established in <code>QProcess</code>:</p>
+
+<blockquote>
+  <p><a href="http://qt-project.org/doc/qt-5/qprocess.html#setProcessChannelMode" rel="nofollow">void QProcess::setProcessChannelMode(ProcessChannelMode mode)</a></p>
+</blockquote>
+
+<p>and</p>
+
+<blockquote>
+  <p><a href="http://qt-project.org/doc/qt-5/qprocess.html#setStandardOutputProcess" rel="nofollow">void QProcess::setStandardOutputProcess(QProcess * destination)</a></p>
+</blockquote>
+
+<p>Therefore, the following code snippet would be the equivalence of <code>command1 | command2</code> without limiting yourself to one interpreter or another:</p>
+
+<pre><code>QProcess process1
+QProcess process2;
+
+process1.setStandardOutputProcess(&amp;process2);
+
+process1.start("echo myPass");
+process2.start("sudo -S shutdown -r now");
+process2.setProcessChannelMode(QProcess::ForwardedChannels);
+
+// Wait for it to start
+if(!process1.waitForStarted())
+    return 0;
+
+bool retval = false;
+QByteArray buffer;
+// To be fair: you only need to wait here for a bit with shutdown,
+// but I will still leave the rest here for a generic solution
+while ((retval = process2.waitForFinished()));
+    buffer.append(process2.readAll());
+
+if (!retval) {
+    qDebug() &lt;&lt; "Process 2 error:" &lt;&lt; process2.errorString();
+    return 1;
+}
+</code></pre>
+
+<p>You could drop the <code>sudo -S</code> part because you could run this small program as root, as well as setting up the rights. You could even set setuid or setcap for the shutdown program.</p>
+
+<p>What we usually do when building commercial Linux systems is to have a minimal application that can get setuid or setcap for the activity it is trying to do, and then we call that explicitly with <code>system(3)</code> or <code>QProcess</code> on Linux. Basically,</p>
+
+<p>I would write that small application to avoid giving full root access to the whole application, so to restrict the access right against malicious use as follows:</p>
+
+<pre><code>sudo chmod u+s /path/to/my/application
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/23322860" title="short permalink to this answer" class="short-link" id="link-post-23322860">share</a><span class="lsep">|</span><a href="/posts/23322860/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/23322860/revisions" title="show all edits to this post">edited <span title="2014-04-27 11:43:55Z" class="relativetime">Apr 27 at 11:43</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br>
+        
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2014-04-27 11:32:57Z" class="relativetime">Apr 27 at 11:32</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2682142/lpapp"><div class="gravatar-wrapper-32"><img src="http://i.stack.imgur.com/yx7N3.jpg?s=32&g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2682142/lpapp">lpapp</a><br>
+        <span class="reputation-score" title="reputation score 24670" dir="ltr">24.7k</span><span title="13 gold badges"><span class="badge1"></span><span class="badgecount">13</span></span><span title="24 silver badges"><span class="badge2"></span><span class="badgecount">24</span></span><span title="40 bronze badges"><span class="badge3"></span><span class="badgecount">40</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-23322860" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-35710288" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">This works well and i like it because it is more general and more in  a Qt way. I don&#39;t know what is this for: process2.setProcessChannelMode(QProcess::ForwardedChannels);</span>
+                &ndash;&nbsp;
+                    <a href="/users/3049264/nejat"
+                       title="8943 reputation"
+                       class="comment-user owner">Nejat</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 12:06:19Z" class="relativetime-clean">Apr 27 at 12:06</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35710338" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">@Nejat: yeah, it may work without that, but last time I had issues when not having that. The purpose of it is to redirect the child process&#39; output to the main process, so, yeah, that may be unnecessary for your case.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2682142/lpapp"
+                       title="24670 reputation"
+                       class="comment-user">lpapp</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 12:08:56Z" class="relativetime-clean">Apr 27 at 12:08</span></span>
+                    <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+            <div id="comments-link-23322860" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span><a class="js-show-link comments-link dno" title="expand to show all comments on this post, or add one of your own" href=# onclick=""></a>
+            </div>
+    </td>
+</tr>    </table>
+</div>
+<script>
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk1787735476",4).setZone(44) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk1787735476">
+            </div>
+  
+<a name="23322814"></a>
+<div id="answer-23322814" class="answer" data-answerid="23322814"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input type="hidden" name="_id_" value="23322814">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>You must put your command in a shell script and execute <code>sh</code> or <code>bash</code> with QProcess with your shell script as argument, because your command contains <code>|</code>, which <em>must</em> be interpreted by <code>sh</code> or <code>bash</code>. </p>
+
+<p>However, it's just my opinion, but: I don't think it is a good solution to do what you are doing, i.e. include your root password in an executable.</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/23322814" title="short permalink to this answer" class="short-link" id="link-post-23322814">share</a><span class="lsep">|</span><a href="/posts/23322814/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2014-04-27 11:27:50Z" class="relativetime">Apr 27 at 11:27</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2687712/anticlimacus"><div><img src="https://www.gravatar.com/avatar/eba5e7b4134ebefb05f6907c13b328af?s=32&d=identicon&r=PG&f=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2687712/anticlimacus">AntiClimacus</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">804</span><span title="1 silver badge"><span class="badge2"></span><span class="badgecount">1</span></span><span title="10 bronze badges"><span class="badge3"></span><span class="badgecount">10</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-23322814" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="1"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-35709695" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">This is not recommended as it restricts the availability to the given interpreter.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2682142/lpapp"
+                       title="24670 reputation"
+                       class="comment-user">lpapp</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:34:11Z" class="relativetime-clean">Apr 27 at 11:34</span></span>
+                    <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35709828" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I have already tried that successfully if you read the question.</span>
+                &ndash;&nbsp;
+                    <a href="/users/3049264/nejat"
+                       title="8943 reputation"
+                       class="comment-user owner">Nejat</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:40:17Z" class="relativetime-clean">Apr 27 at 11:40</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35709874" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">@LaszloPapp: Do you know a Linux system without /bin/sh ? The question was about Linux, not all operating systems. If the command was more complex, with several pipes / redirectors, what do you do ? 10 QProcess ? It&#39;s also more flexible to dedicate the command in a shell script: if you would like to change the command, you don&#39;t need to compile again your executable.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2687712/anticlimacus"
+                       title="804 reputation"
+                       class="comment-user">AntiClimacus</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:42:39Z" class="relativetime-clean">Apr 27 at 11:42</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35709921" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">The OP explicitly tried this and asked: <code>How is it possible to run such relatively complex commands directly using QProcess. (Not putting in a shell script).</code> -&gt; You are not attempting to answer the question. Besides, you are also confused: interpreter is <i>not</i> sh, but <i>bash</i>. And, yes, the whole embedded industry is based on busybox or toybox without bash. Many people also use zsh instead of bash on desktop, et cetera. The OP wanted to avoid it and find a cross-solution. I still think you are just reiterating what the OP wrote, so it is not an attempt to answer the question.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2682142/lpapp"
+                       title="24670 reputation"
+                       class="comment-user">lpapp</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:45:29Z" class="relativetime-clean">Apr 27 at 11:45</span></span>
+                    <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35710038" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I&#39;m not confused: sh is not bash, and is not always a symlink to bash, sh is an entire and independent shell (<a href="http://en.wikipedia.org/wiki/Bourne_shell" rel="nofollow">en.wikipedia.org/wiki/Bourne_shell</a>). And even there is no bash and no sh, e.g. if you use zsh, dash, or other shells, then, in this case, sh points to the right interpreter.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2687712/anticlimacus"
+                       title="804 reputation"
+                       class="comment-user">AntiClimacus</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:51:52Z" class="relativetime-clean">Apr 27 at 11:51</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+            <div id="comments-link-23322814" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link  dno"
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   ></a><span class="js-link-separator dno">&nbsp;|&nbsp;</span><a class="js-show-link comments-link " title="expand to show all comments on this post, or add one of your own" href=# onclick="">show <b>1</b> more comment</a>
+            </div>
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="23322827"></a>
+<div id="answer-23322827" class="answer" data-answerid="23322827"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input type="hidden" name="_id_" value="23322827">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>First, you could configure <code>sudo</code> to avoid asking you the password. For instance by being member of the <code>sudo</code> group and having the line</p>
+
+<pre><code> %sudo  ALL=NOPASSWD:  ALL
+</code></pre>
+
+<p>in your <code>/etc/sudoers</code> file. Of course not asking the password lowers the security of your system.</p>
+
+<p>To answer your question about Qt, remember that <a href="http://man7.org/linux/man-pages/man1/bash.1.html" rel="nofollow">bash(1)</a>, like all <a href="http://en.wikipedia.org/wiki/POSIX" rel="nofollow">Posix</a> shells, hence <code>/bin/sh</code>, accept the <code>-c</code> argument with a string (actually <a href="http://man7.org/linux/man-pages/man3/system.3.html" rel="nofollow">system(3)</a> is forking a <code>/bin/sh -c</code>). So just execute</p>
+
+<pre><code> process.startDetached("/bin/sh", QStringList()&lt;&lt; "-c" 
+                       &lt;&lt; "echo myPass | sudo -S shutdown -r now");
+</code></pre>
+
+<p>As <a href="http://stackoverflow.com/a/23322814/841108">AntiClimacus answered</a>, puting your root password inside an executable is a bad idea.</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/23322827" title="short permalink to this answer" class="short-link" id="link-post-23322827">share</a><span class="lsep">|</span><a href="/posts/23322827/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2014-04-27 11:29:25Z" class="relativetime">Apr 27 at 11:29</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/841108/basile-starynkevitch"><div class="gravatar-wrapper-32"><img src="http://i.stack.imgur.com/8Jssg.png?s=32&g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/841108/basile-starynkevitch">Basile Starynkevitch</a><br>
+        <span class="reputation-score" title="reputation score 80045" dir="ltr">80k</span><span title="5 gold badges"><span class="badge1"></span><span class="badgecount">5</span></span><span title="44 silver badges"><span class="badge2"></span><span class="badgecount">44</span></span><span title="104 bronze badges"><span class="badge3"></span><span class="badgecount">104</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-23322827" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-35709732" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">It is a suboptimal idea, because Qt has dedicated API for this which does not limit you to an interpreter.</span>
+                &ndash;&nbsp;
+                    <a href="/users/2682142/lpapp"
+                       title="24670 reputation"
+                       class="comment-user">lpapp</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:35:56Z" class="relativetime-clean">Apr 27 at 11:35</span></span>
+                    <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-35709879" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Also, it seems the OP already tried this, and also asked <code>How is it possible to run such relatively complex commands directly using QProcess. (Not putting in a shell script).</code></span>
+                &ndash;&nbsp;
+                    <a href="/users/2682142/lpapp"
+                       title="24670 reputation"
+                       class="comment-user">lpapp</a>
+                <span class="comment-date" dir="ltr"><span title="2014-04-27 11:42:59Z" class="relativetime-clean">Apr 27 at 11:42</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+            <div id="comments-link-23322827" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span><a class="js-show-link comments-link dno" title="expand to show all comments on this post, or add one of your own" href=# onclick=""></a>
+            </div>
+    </td>
+</tr>    </table>
+</div>
+				
+
+
+						<h2 class="bottom-notice" data-loc="1">
+Not the answer you&#39;re looking for?							Browse other questions tagged <a href="/questions/tagged/c%2b%2b" class="post-tag" title="show questions tagged 'c++'" rel="tag">c++</a> <a href="/questions/tagged/linux" class="post-tag" title="show questions tagged 'linux'" rel="tag">linux</a> <a href="/questions/tagged/qt" class="post-tag" title="show questions tagged 'qt'" rel="tag">qt</a> <a href="/questions/tagged/shell" class="post-tag" title="show questions tagged 'shell'" rel="tag">shell</a> <a href="/questions/tagged/qprocess" class="post-tag" title="show questions tagged 'qprocess'" rel="tag">qprocess</a>  or <a href="/questions/ask">ask your own question</a>.						</h2>
+			</div>
+		</div>
+				<div id="sidebar" class="show-votes">
+						    <div class="module question-stats">
+			        <table id="qinfo">
+			            <tr>
+			                <td>
+			                    <p class="label-key">asked</p>
+			                </td>
+			                <td style="padding-left: 10px">
+			                    <p class="label-key" title="2014-04-27 11:21:23Z"><b>7 months ago</b></p>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td>
+			                    <p class="label-key">viewed</p>
+			                </td>
+
+			                <td style="padding-left: 10px">
+			                    <p class="label-key">
+			                        <b>1706 times</b>
+			                    </p>
+			                </td>
+			            </tr>
+			                <tr>
+			                    <td>
+			                        <p class="label-key">active</p>
+			                    </td>
+			                    <td style="padding-left: 10px">
+			                        <p class="label-key"><b><a href="?lastactivity" class="lastactivity-link" title="2014-10-04 10:33:37Z">1 month ago</a></b></p>
+			                    </td>
+			                </tr>
+			        </table>
+			    </div>
+			<div class="module community-bulletin" data-tracker="cb=1">
+    <div class="related">
+                <div class="bulletin-title">
+                    Upcoming Events
+                </div>
+                <hr />
+    <div class="spacer">
+        
+    <div class="bulletin-item-type"><a href="http://meta.stackoverflow.com/questions/278142/js-room-monthly-challenge-december-voting" class="question-hyperlink"><div class="favicon favicon-stackoverflow" title="Stack Overflow"></div></a></div>
+    <div class="bulletin-item-content">
+        <a href="http://meta.stackoverflow.com/questions/278142/js-room-monthly-challenge-december-voting" class="question-hyperlink">JS Room Monthly Challenge December Voting</a>
+        <div>ends <span title="2014-12-06 00:00:00Z" class="relativetime">in 3 days</span></div>
+    </div>
+    <br class="cbt" />
+</div>
+    </div>
+</div>			
+			<script>
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk714869919",[17,2221]).setZone(45) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk714869919">
+            </div>  
+        <div id="hireme">
+            <script>
+;(function(d,g){var h=document;var a=window.$;var n=100;var c;var o="#sidebar [id^='adzerk'].everyonelovesstackoverflow";var k="#adzerk1";var b="div#hireme, div.hireme";function i(q){return a(q).html().replace(/\s+/g,"").length>0}function p(r){var q=a(o);if(q.length===0){return true}return !i(q)}function l(){var q=a(b);if(q.length>0){var r=a.map(q,function(s){return"d="+s.id});var t=h.createElement("script");t.type="text/javascript";t.src=d+(d.indexOf("?")===-1?"?":"&")+r.join("&");if(f()){t.src+="&l=1"}if(location.hash){t.src+="&"+location.hash.replace(/^#/,"")}if(g){t.src+="&background=true"}if(StackExchange&&StackExchange.options&&StackExchange.options.user&&StackExchange.options.user.accountId){t.src+="&ac="+StackExchange.options.user.accountId}h.body.appendChild(t)}}function f(){return a("#careersadsdoublehigh").length>0}function e(){return a("#commdoubhi").length>0}function m(){clearTimeout(c);if(p(k)||p(o)){c=setTimeout(m,n);return}var q=location.hash.indexOf("#abort")!==-1||e();if(q){j();return}l()}function j(){clearTimeout(c);if(g){return}var q=a(b);q.each(function(){var r=a(this);if(!i(r)){var t=r;var s=r.parents(".everyonelovesstackoverflow").first();if(s.length>0){t=s}t.remove()}})}setTimeout(j,2000);c=setTimeout(m,n)}).apply(null, ["//clc.stackoverflow.com/j/p",false]);            </script>
+            
+        </div>
+			  
+    
+            <div class="module sidebar-linked">
+	<h4 id="h-linked">Linked</h4>
+	<div class="linked" data-tracker="lq=1">
+<div class="spacer">
+	<a href="/q/20901884" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">4</div>
+	</a>
+	<a href="/questions/20901884/pipe-with-qprocess" class="question-hyperlink">Pipe with QProcess</a>
+</div>			</div>
+</div>
+
+				<div class="module sidebar-related">
+					<h4 id="h-related">Related</h4>
+                    <div class="related js-gps-related-questions" data-tracker="rq=1">
+                        <div class="spacer">
+<a href="/q/7597062" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">2
+    </div>
+</a><a href="/questions/7597062/qprocess-messes-my-linux-command-up-i-think-how-to-fix" class="question-hyperlink">Qprocess messes my linux command up (i think). how to fix?</a>
+</div>
+<div class="spacer">
+<a href="/q/9086771" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">3
+    </div>
+</a><a href="/questions/9086771/how-to-start-a-shell-script-with-qprocess" class="question-hyperlink">How to start a Shell Script with QProcess?</a>
+</div>
+<div class="spacer">
+<a href="/q/13769741" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">4
+    </div>
+</a><a href="/questions/13769741/redirecting-output-from-gnome-terminal-using-qprocess-in-c" class="question-hyperlink">Redirecting output from gnome-terminal using QProcess in C++</a>
+</div>
+<div class="spacer">
+<a href="/q/19185056" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">2
+    </div>
+</a><a href="/questions/19185056/qprocess-not-executing-a-python-script" class="question-hyperlink">QProcess not executing a python script</a>
+</div>
+<div class="spacer">
+<a href="/q/19675806" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="/questions/19675806/how-to-execute-export-command-in-linux-via-qt" class="question-hyperlink">How to execute &ldquo;export&rdquo; command in linux via Qt</a>
+</div>
+<div class="spacer">
+<a href="/q/20743793" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="/questions/20743793/how-to-detect-when-ssh-connection-over-a-qprocess-has-finished" class="question-hyperlink">How to detect when ssh connection (over a QProcess) has finished?</a>
+</div>
+<div class="spacer">
+<a href="/q/23224170" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="/questions/23224170/qprocess-how-to-read-output-from-pactl" class="question-hyperlink">QProcess: how to read output from pactl</a>
+</div>
+<div class="spacer">
+<a href="/q/23436138" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="/questions/23436138/how-to-execute-command-like-qmake-v-1-txt-from-a-specific-folder-with-qproc" class="question-hyperlink">How to execute command like &ldquo;qmake -v &gt; 1.txt&rdquo; from a specific folder with QProcess?</a>
+</div>
+<div class="spacer">
+<a href="/q/23766173" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">3
+    </div>
+</a><a href="/questions/23766173/launching-a-shell-script-when-button-pressed-on-gui-made-with-qt" class="question-hyperlink">Launching a shell script when Button Pressed on GUI made with Qt</a>
+</div>
+<div class="spacer">
+<a href="/q/25464368" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">0
+    </div>
+</a><a href="/questions/25464368/rsync-running-differently-from-qprocess-compared-to-bash-command-line" class="question-hyperlink">rsync running differently from QProcess compared to bash command line</a>
+</div>
+
+                    </div>
+				</div>
+            
+<div id="hot-network-questions" class="module">
+    <h4>
+        <a href="//stackexchange.com/questions?tab=hot" 
+           class="js-gps-track" 
+           data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+            Hot Network Questions
+        </a>
+    </h4>
+    <ul>
+            <li >
+                <div class="favicon favicon-physics" title="Physics Stack Exchange"></div><a href="http://physics.stackexchange.com/questions/150128/how-do-microwaves-heat-moisture-free-items" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:151 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How do microwaves heat moisture-free items?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-gaming" title="Arqade"></div><a href="http://gaming.stackexchange.com/questions/194082/what-happens-if-i-genocide-my-own-race" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:41 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What happens if I genocide my own race?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-outdoors" title="The Great Outdoors Stack Exchange"></div><a href="http://outdoors.stackexchange.com/questions/7274/how-to-check-if-a-fence-or-cable-has-electricity-without-having-special-tools" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:395 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to check if a fence or cable has electricity without having special tools?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/845394/how-is-png-lossless-given-that-it-has-a-compression-parameter" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How is PNG lossless given that it has a Compression parameter?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-codereview" title="Code Review Stack Exchange"></div><a href="http://codereview.stackexchange.com/questions/71431/representation-of-the-formula-pn-n6n-in-c" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:196 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Representation of the formula P(n) = (n!)(6^n) in C
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/847627/how-can-i-record-a-transition-from-a-0-to-1-in-a-column-in-excel" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How can I record a transition from a 0 to 1 in a column in Excel?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-security" title="Information Security Stack Exchange"></div><a href="http://security.stackexchange.com/questions/74113/do-i-have-to-hash-users-ip-addresses-when-i-log-them" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:162 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Do I have to hash users&#39; IP addresses when I log them?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="http://tex.stackexchange.com/questions/215048/mapping-to" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Mapping $$...$$ to \[...\]
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/42109/mutual-negative-quines" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Mutual Negative Quines
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-cs" title="Computer Science Stack Exchange"></div><a href="http://cs.stackexchange.com/questions/33744/how-to-represent-whitespace-in-a-context-free-grammar" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:419 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to represent whitespace in a context-free grammar?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codereview" title="Code Review Stack Exchange"></div><a href="http://codereview.stackexchange.com/questions/71416/foolproof-number-validation" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:196 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Foolproof number validation
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/42079/shortest-minmod-function" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Shortest Minmod Function
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-travel" title="Travel Stack Exchange"></div><a href="http://travel.stackexchange.com/questions/39299/if-youre-evacuated-on-a-flight-paid-for-by-your-government-eg-civil-unrest-vo" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:273 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    If you&#39;re evacuated on a flight paid for by your government (eg civil unrest, volcanic ash delays), are you ever entitled to the frequent flyer miles?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/1046108/is-there-a-shape-with-infinite-area-but-finite-perimeter" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is there a shape with infinite area but finite perimeter?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div><a href="http://stackoverflow.com/questions/27256377/c-view-types-pass-by-const-or-by-value" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:1 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    C++ view types: pass by const&amp; or by value?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-ell" title="English Language Learners Stack Exchange"></div><a href="http://ell.stackexchange.com/questions/41022/to-document-in-categories-the-items-included-in-the-deposit-transaction-i-don" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:481 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    to document in categories the items included in the deposit transaction -- I don&#39;t quite understand what it really says
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="http://rpg.stackexchange.com/questions/51600/aspects-that-interact-with-other-aspects-in-fate-core" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Aspects that Interact With Other Aspects in Fate Core
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-cstheory" title="Theoretical Computer Science Stack Exchange"></div><a href="http://cstheory.stackexchange.com/questions/27674/for-what-c-is-division-by-c-in-ac0" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:114 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    For what c is division by c in AC0?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="http://rpg.stackexchange.com/questions/51575/is-the-warlocks-awakened-mind-telepathy-two-way-or-only-one-way" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is the Warlock&#39;s Awakened Mind telepathy two-way, or only one-way?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/211481/how-to-give-a-tip-without-using-keep-the-change" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to give a tip without using &#39;Keep the change&#39;
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-unix" title="Unix &amp; Linux Stack Exchange"></div><a href="http://unix.stackexchange.com/questions/171150/back-to-back-pipes-into-a-command" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:106 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Back to back Pipes into a Command
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="http://tex.stackexchange.com/questions/215090/putting-algorithm-in-minipage" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Putting algorithm in minipage
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/1049367/simple-triangle-question" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    simple triangle question
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-judaism" title="Mi Yodeya"></div><a href="http://judaism.stackexchange.com/questions/48988/why-did-yaakov-send-only-animals-to-esav" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:248 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why did Yaakov send only animals to Esav?
+                </a>
+
+            </li>
+    </ul>
+
+        <a href="#" 
+           class="show-more js-show-more js-gps-track" 
+           data-gps-track="posts_hot_network.click({ item_type:3, location:11 })">
+            more hot questions
+        </a>
+</div>
+		</div>
+		<script>
+StackExchange.ready(function(){$.get('/posts/23322739/ivc/084c');});
+</script>
+<noscript>
+    <div><img src="/posts/23322739/ivc/084c" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">default</div></div>
+
+
+
+        </div>
+    </div>
+    <div id="footer" class="categories">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <div class="top-footer-links">
+                        <a href="/tour">tour</a>
+                    <a href="/help">help</a>
+                    <a href="http://blog.stackoverflow.com?blb=1">blog</a>
+                        <a href="http://chat.stackoverflow.com">chat</a>
+                    <a href="http://data.stackexchange.com">data</a>
+                    <a href="http://stackexchange.com/legal">legal</a>
+                    <a href="http://stackexchange.com/legal/privacy-policy">privacy policy</a>
+                    <a href="http://stackexchange.com/work-here">work here</a>
+                    <a href="http://stackexchange.com/mediakit">advertising info</a>
+
+                    <a onclick='StackExchange.switchMobile("on")'>mobile</a>
+                    <b><a href="/contact">contact us</a></b>
+                        <b><a href="http://meta.stackoverflow.com">feedback</a></b>
+                    
+                </div>
+                <div id="footer-sites">
+                    <table>
+    <tr>
+            <th colspan=3>
+                Technology
+            </th>
+            <th >
+                Life / Arts
+            </th>
+            <th >
+                Culture / Recreation
+            </th>
+            <th >
+                Science
+            </th>
+            <th >
+                Other
+            </th>
+    </tr>
+    <tr>
+            <td>
+                <ol>
+                        <li><a href="//stackoverflow.com" title="professional and enthusiast programmers">Stack Overflow</a></li>
+                        <li><a href="//serverfault.com" title="professional system and network administrators">Server Fault</a></li>
+                        <li><a href="//superuser.com" title="computer enthusiasts and power users">Super User</a></li>
+                        <li><a href="//webapps.stackexchange.com" title="power users of web applications">Web Applications</a></li>
+                        <li><a href="//askubuntu.com" title="Ubuntu users and developers">Ask Ubuntu</a></li>
+                        <li><a href="//webmasters.stackexchange.com" title="pro webmasters">Webmasters</a></li>
+                        <li><a href="//gamedev.stackexchange.com" title="professional and independent game developers">Game Development</a></li>
+                        <li><a href="//tex.stackexchange.com" title="users of TeX, LaTeX, ConTeXt, and related typesetting systems">TeX - LaTeX</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="//programmers.stackexchange.com" title="professional programmers interested in conceptual questions about software development">Programmers</a></li>
+                        <li><a href="//unix.stackexchange.com" title="users of Linux, FreeBSD and other Un*x-like operating systems.">Unix &amp; Linux</a></li>
+                        <li><a href="//apple.stackexchange.com" title="power users of Apple hardware and software">Ask Different (Apple)</a></li>
+                        <li><a href="//wordpress.stackexchange.com" title="WordPress developers and administrators">WordPress Development</a></li>
+                        <li><a href="//gis.stackexchange.com" title="cartographers, geographers and GIS professionals">Geographic Information Systems</a></li>
+                        <li><a href="//electronics.stackexchange.com" title="electronics and electrical engineering professionals, students, and enthusiasts">Electrical Engineering</a></li>
+                        <li><a href="//android.stackexchange.com" title="enthusiasts and power users of the Android operating system">Android Enthusiasts</a></li>
+                        <li><a href="//security.stackexchange.com" title="Information security professionals">Information Security</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="//dba.stackexchange.com" title="database professionals who wish to improve their database skills and learn from others in the community">Database Administrators</a></li>
+                        <li><a href="//drupal.stackexchange.com" title="Drupal developers and administrators">Drupal Answers</a></li>
+                        <li><a href="//sharepoint.stackexchange.com" title="SharePoint enthusiasts">SharePoint</a></li>
+                        <li><a href="//ux.stackexchange.com" title="user experience researchers and experts">User Experience</a></li>
+                        <li><a href="//mathematica.stackexchange.com" title="users of Mathematica">Mathematica</a></li>
+                        <li><a href="//salesforce.stackexchange.com" title="Salesforce administrators, implementation experts, developers and anybody in-between">Salesforce</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#technology" class="more">
+                                more (13)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//photo.stackexchange.com" title="professional, enthusiast and amateur photographers">Photography</a></li>
+                        <li><a href="//scifi.stackexchange.com" title="science fiction and fantasy enthusiasts">Science Fiction &amp; Fantasy</a></li>
+                        <li><a href="//graphicdesign.stackexchange.com" title="Graphic Design professionals, students, and enthusiasts">Graphic Design</a></li>
+                        <li><a href="//cooking.stackexchange.com" title="professional and amateur chefs">Seasoned Advice (cooking)</a></li>
+                        <li><a href="//diy.stackexchange.com" title="contractors and serious DIYers">Home Improvement</a></li>
+                        <li><a href="//money.stackexchange.com" title="people who want to be financially literate">Personal Finance &amp; Money</a></li>
+                        <li><a href="//academia.stackexchange.com" title="academics and those enrolled in higher education">Academia</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#lifearts" class="more">
+                                more (10)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//english.stackexchange.com" title="linguists, etymologists, and serious English language enthusiasts">English Language &amp; Usage</a></li>
+                        <li><a href="//skeptics.stackexchange.com" title="scientific skepticism">Skeptics</a></li>
+                        <li><a href="//judaism.stackexchange.com" title="those who base their lives on Jewish law and tradition and anyone interested in learning more">Mi Yodeya (Judaism)</a></li>
+                        <li><a href="//travel.stackexchange.com" title="road warriors and seasoned travelers">Travel</a></li>
+                        <li><a href="//christianity.stackexchange.com" title="committed Christians, experts in Christianity and those interested in learning more">Christianity</a></li>
+                        <li><a href="//gaming.stackexchange.com" title="passionate videogamers on all platforms">Arqade (gaming)</a></li>
+                        <li><a href="//bicycles.stackexchange.com" title="people who build and repair bicycles, people who train cycling, or commute on bicycles">Bicycles</a></li>
+                        <li><a href="//rpg.stackexchange.com" title="gamemasters and players of tabletop, paper-and-pencil role-playing games">Role-playing Games</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#culturerecreation" class="more">
+                                more (21)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//math.stackexchange.com" title="people studying math at any level and professionals in related fields">Mathematics</a></li>
+                        <li><a href="//stats.stackexchange.com" title="people interested in statistics, machine learning, data analysis, data mining, and data visualization">Cross Validated (stats)</a></li>
+                        <li><a href="//cstheory.stackexchange.com" title="theoretical computer scientists and researchers in related fields">Theoretical Computer Science</a></li>
+                        <li><a href="//physics.stackexchange.com" title="active researchers, academics and students of physics">Physics</a></li>
+                        <li><a href="//mathoverflow.net" title="professional mathematicians">MathOverflow</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#science" class="more">
+                                more (7)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//stackapps.com" title="apps, scripts, and development with the Stack Exchange API">Stack Apps</a></li>
+                        <li><a href="//meta.stackexchange.com" title="meta-discussion of the Stack Exchange family of Q&amp;A websites">Meta Stack Exchange</a></li>
+                        <li><a href="//area51.stackexchange.com" title="proposing new sites in the Stack Exchange network">Area 51</a></li>
+                        <li><a href="//careers.stackoverflow.com?utm_source=stackoverflow.com&amp;utm_medium=site-ui&amp;utm_campaign=footerlink">Stack Overflow Careers</a></li>
+                    
+                </ol>
+            </td>
+    </tr>
+</table>
+                </div>
+            </div>
+
+            <div id="copyright">
+                site design / logo &#169; 2014 stack exchange inc; user contributions licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc by-sa 3.0</a>                   with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            <div id="svnrev">
+                rev 2014.12.2.2059
+            </div>
+            
+        </div>
+    </div>
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+<script>var p = "http", d = "static"; if (document.location.protocol == "https:") { p += "s"; d = "engine"; } var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = p + "://" + d + ".adzerk.net/ados.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script>
+<script>
+    var ados = ados || {};
+    ados.run = ados.run || [];
+    ados.run.push(function () { ados_setKeywords('c%2b%2b,linux,qt,shell,qprocess');; ados_load(); });         
+</script>
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () { (i[r].q = i[r].q || []).push(arguments) }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-5620270-1');        
+        
+        ga('set', 'dimension2', '|c++|linux|qt|shell|qprocess|');         
+        ga('send', 'pageview');
+        var _qevents = _qevents || [],
+            _comscore = _comscore || [];
+        (function () {
+            var ssl='https:'==document.location.protocol,
+                s=document.getElementsByTagName('script')[0],
+                qc=document.createElement('script');
+            qc.async=true;
+            qc.src=(ssl?'https://secure':'http://edge')+'.quantserve.com/quant.js';
+            s.parentNode.insertBefore(qc, s);
+            var sc=document.createElement('script');
+            sc.async=true;
+            sc.src=(ssl?'https://sb':'http://b') + '.scorecardresearch.com/beacon.js';
+            s.parentNode.insertBefore(sc, s);
+        })();
+        _comscore.push({ c1: "2", c2: "17440561" });
+        _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+    </script>        
+    
+    </body>
+</html>
+<div class="post-text" itemprop="text"><span>
+</span><p>The key methods that exist for this purpose established in <code>QProcess</code>:</p><span>
+
+</span><blockquote>
+  <p><a href="http://qt-project.org/doc/qt-5/qprocess.html#setProcessChannelMode" rel="nofollow">void QProcess::setProcessChannelMode(ProcessChannelMode mode)</a></p>
+</blockquote><span>
+
+</span><p>and</p><span>
+
+</span><blockquote>
+  <p><a href="http://qt-project.org/doc/qt-5/qprocess.html#setStandardOutputProcess" rel="nofollow">void QProcess::setStandardOutputProcess(QProcess * destination)</a></p>
+</blockquote><span>
+
+</span><p>Therefore, the following code snippet would be the equivalence of <code>command1 | command2</code> without limiting yourself to one interpreter or another:</p><span>
+
+</span><pre><code>QProcess process1
+QProcess process2;
+
+process1.setStandardOutputProcess(&amp;process2);
+
+process1.start("echo myPass");
+process2.start("sudo -S shutdown -r now");
+process2.setProcessChannelMode(QProcess::ForwardedChannels);
+
+// Wait for it to start
+if(!process1.waitForStarted())
+    return 0;
+
+bool retval = false;
+QByteArray buffer;
+// To be fair: you only need to wait here for a bit with shutdown,
+// but I will still leave the rest here for a generic solution
+while ((retval = process2.waitForFinished()));
+    buffer.append(process2.readAll());
+
+if (!retval) {
+    qDebug() &lt;&lt; "Process 2 error:" &lt;&lt; process2.errorString();
+    return 1;
+}
+</code></pre><span>
+
+</span><p>You could drop the <code>sudo -S</code> part because you could run this small program as root, as well as setting up the rights. You could even set setuid or setcap for the shutdown program.</p><span>
+
+</span><p>What we usually do when building commercial Linux systems is to have a minimal application that can get setuid or setcap for the activity it is trying to do, and then we call that explicitly with <code>system(3)</code> or <code>QProcess</code> on Linux. Basically,</p><span>
+
+</span><p>I would write that small application to avoid giving full root access to the whole application, so to restrict the access right against malicious use as follows:</p><span>
+
+</span><pre><code>sudo chmod u+s /path/to/my/application
+</code></pre><span>
+    </span></div>

@@ -58,6 +58,7 @@ MainWindow::MainWindow(const QUrl& url)
     file.close();
 //! [1]
 
+
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
 //! [2]
@@ -67,7 +68,7 @@ MainWindow::MainWindow(const QUrl& url)
     connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
     connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
     connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
-    connect(view, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
+    connect(view->page()->mainFrame(), SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     locationEdit = new QLineEdit(this);
     locationEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
@@ -163,10 +164,28 @@ void MainWindow::finishLoading(bool)
     adjustTitle();
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
 
-    qDebug() << "starting";
-    qDebug() << HTML2Text(view->page()->mainFrame()->toHtml());
+//    qDebug() << "starting";
+//    qDebug() << HTML2Text(view->page()->mainFrame()->toHtml());
 
-        qDebug() << "ending";
+//        qDebug() << "ending";
+
+
+
+    QProcess process;
+    process.start("node /home/dyz/MLProj/dataCollect/reada.js");
+    process.waitForStarted();
+    process.write(view->page()->mainFrame()->toHtml().toStdString().c_str());
+    process.closeWriteChannel();
+    process.waitForFinished(-1); // will wait forever until finished
+
+    QString stdout = process.readAllStandardOutput();
+    QString stderr = process.readAllStandardError();
+
+    qDebug() << "ending";
+
+    qDebug() << stdout;
+    qDebug() << stderr;
+//    qDebug() << view->page()->mainFrame()->toHtml();
 
     QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#searchResults");
     QWebElement element = *collection.begin();
