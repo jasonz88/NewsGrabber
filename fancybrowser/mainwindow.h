@@ -39,6 +39,8 @@
 ****************************************************************************/
 
 #include <QtWidgets>
+#include <QNetworkReply>
+#include <QSslError>
 
 class QWebView;
 QT_BEGIN_NAMESPACE
@@ -70,6 +72,7 @@ protected slots:
     void removeInlineFrames();
     void removeObjectElements();
     void removeEmbeddedElements();
+    void sslErrors(QNetworkReply *reply, const QList<QSslError> &error);
     QString HTML2Text(const QString &in);
 
 private:

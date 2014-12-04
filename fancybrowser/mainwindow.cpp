@@ -70,6 +70,9 @@ MainWindow::MainWindow(const QUrl& url)
     connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view->page()->mainFrame(), SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
+    connect(view->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
+            SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+
     locationEdit = new QLineEdit(this);
     locationEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
     connect(locationEdit, SIGNAL(returnPressed()), SLOT(changeLocation()));
@@ -107,6 +110,16 @@ MainWindow::MainWindow(const QUrl& url)
     setCentralWidget(view);
     setUnifiedTitleAndToolBarOnMac(true);
 }
+
+
+void MainWindow::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)
+{
+    // check if SSL certificate has been trusted already
+    QString replyHost = reply->url().host() + QString(":%1").arg(reply->url().port());
+    reply->ignoreSslErrors();
+}
+
+
 //! [3]
 
 void MainWindow::viewSource()
@@ -168,6 +181,8 @@ void MainWindow::finishLoading(bool)
 //    qDebug() << HTML2Text(view->page()->mainFrame()->toHtml());
 
 //        qDebug() << "ending";
+
+    view->setFocus();
 
 
 
