@@ -44,9 +44,20 @@
 #include <QDebug>
 #include "mainwindow.h"
 
+/*
+ * login nytimes.com and wsj.com
+ * *URL generation,   "http://query.nytimes.com/search/sitesearch/#/crude+oil/from20100502to20100503/allresults/1/allauthors/relevance/business"
+ * page loading, href capturing div#searchResults
+ * readability filter
+ * html tags removal
+ * *save to file
+ */
+
 //! [1]
 
 MainWindow::MainWindow(const QUrl& url)
+    :m_isContent(false),
+      m_currentURL("")
 {
     progress = 0;
 
@@ -63,7 +74,7 @@ MainWindow::MainWindow(const QUrl& url)
 
 //! [2]
     view = new QWebView(this);
-    view->load(QUrl("http://www.nytimes.com"));
+    view->load(QUrl("http://online.wsj.com"));
 //    view->load(url);
     connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
     connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
@@ -177,48 +188,44 @@ void MainWindow::finishLoading(bool)
     adjustTitle();
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
 
-//    qDebug() << "starting";
-//    qDebug() << HTML2Text(view->page()->mainFrame()->toHtml());
+    if(m_isContent) {
+        QProcess process;
+        process.start("node /home/dyz/MLProj/dataCollect/reada.js");
+        process.waitForStarted();
+//        qDebug() << view->page()->mainFrame()->toHtml();
+        process.write(view->page()->mainFrame()->toHtml().toStdString().c_str());
+        process.closeWriteChannel();
+        process.waitForFinished(-1); // will wait forever until finished
 
-//        qDebug() << "ending";
-
+        QString stdout = process.readAllStandardOutput();
+        QString stderr = process.readAllStandardError();
+        qDebug() << m_currentURL;
+        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));;
+        qDebug() << "dddddddddddddddd";
+        qDebug() << stderr;
+        m_isContent = false;
+    }
     view->setFocus();
 
 
-
-    QProcess process;
-    process.start("node /home/dyz/MLProj/dataCollect/reada.js");
-    process.waitForStarted();
-    process.write(view->page()->mainFrame()->toHtml().toStdString().c_str());
-    process.closeWriteChannel();
-    process.waitForFinished(-1); // will wait forever until finished
-
-    QString stdout = process.readAllStandardOutput();
-    QString stderr = process.readAllStandardError();
-
-    qDebug() << "ending";
-
-    qDebug() << stdout;
-    qDebug() << stderr;
-//    qDebug() << view->page()->mainFrame()->toHtml();
-
-    QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#searchResults");
-    QWebElement element = *collection.begin();
+    QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#archivedArticles");
+    QWebElement element = collection.first();
     QWebElementCollection coll = element.findAll("a");
-        foreach(QWebElement ele, coll)
+    foreach(QWebElement ele, coll)
+    {
+        QString href = ele.attribute("href");
+        if (!href.isEmpty())
         {
-            QString href = ele.attribute("href");
-            if (!href.isEmpty())
-            {
-                qDebug() << href;
-                QEventLoop loop;
-                QTimer::singleShot(3000, &loop, SLOT(quit()));
-                loop.exec();
-                view->load(href);
-            }
-            break;
+            qDebug() << href;
+            m_isContent = true;
+            m_currentURL = href;
+            QEventLoop loop;
+            QTimer::singleShot(3000, &loop, SLOT(quit()));
+            loop.exec();
+            view->load(href);
         }
-
+        break;
+    }
 
     rotateImages(rotateAction->isChecked());
 }
@@ -226,10 +233,7 @@ void MainWindow::finishLoading(bool)
 
 QString MainWindow::HTML2Text(const QString &in)
 {
-    int begin = in.indexOf("<nyt_text>");
-    if (-1 == begin) return QString();
-    int end = in.indexOf("</nyt_text>");
-    return in.mid(begin+10,end-begin-10).remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));
+//    return in.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));
 }
 
 //! [7]
@@ -264,7 +268,7 @@ void MainWindow::removeGifImages()
 {
 //    QString code = "qt.jQuery('[src*=gif]').remove()";
 //    view->page()->mainFrame()->evaluateJavaScript(code);
-        view->load(QUrl("http://query.nytimes.com/search/sitesearch/#/crude+oil/from20100502to20100602/allresults/1/allauthors/relevance/business"));
+        view->load(QUrl("http://online.wsj.com/public/page/archive-2010-12-1.html"));
 
 }
 

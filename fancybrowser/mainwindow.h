@@ -81,5 +81,7 @@ private:
     QLineEdit *locationEdit;
     QAction *rotateAction;
     int progress;
+    bool m_isContent;
+    QString m_currentURL;
 //! [1]
 };
