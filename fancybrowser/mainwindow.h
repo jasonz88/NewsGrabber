@@ -83,5 +83,6 @@ private:
     int progress;
     bool m_isContent;
     QString m_currentURL;
+    QList<QString> m_hrefs;
 //! [1]
 };

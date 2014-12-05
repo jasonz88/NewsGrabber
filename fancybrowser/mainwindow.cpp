@@ -189,21 +189,28 @@ void MainWindow::finishLoading(bool)
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
 
     if(m_isContent) {
+//        QString html(view->page()->mainFrame()->toHtml());
+//        qDebug()<< view->page()->mainFrame()->toHtml().remove(QRegularExpression("<span((.|\n)*)\/span>"));
         QProcess process;
         process.start("node /home/dyz/MLProj/dataCollect/reada.js");
         process.waitForStarted();
 //        qDebug() << view->page()->mainFrame()->toHtml();
-        process.write(view->page()->mainFrame()->toHtml().toStdString().c_str());
+        process.write(view->page()->mainFrame()->toHtml().remove(QRegularExpression("<span[^>]*>((.|\n)*)<\/span>")).toStdString().c_str());
         process.closeWriteChannel();
         process.waitForFinished(-1); // will wait forever until finished
 
         QString stdout = process.readAllStandardOutput();
         QString stderr = process.readAllStandardError();
         qDebug() << m_currentURL;
-        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));;
-        qDebug() << "dddddddddddddddd";
-        qDebug() << stderr;
-        m_isContent = false;
+        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
+//        qDebug() << stderr;
+        if (m_hrefs.isEmpty()) m_isContent = false;
+        else {
+            m_currentURL = m_hrefs.first();
+            m_hrefs.pop_front();
+            view->load(m_currentURL);
+        }
+        return;
     }
     view->setFocus();
 
@@ -218,16 +225,17 @@ void MainWindow::finishLoading(bool)
         {
             qDebug() << href;
             m_isContent = true;
-            m_currentURL = href;
-            QEventLoop loop;
-            QTimer::singleShot(3000, &loop, SLOT(quit()));
-            loop.exec();
-            view->load(href);
+            m_hrefs.push_back(href);
         }
-        break;
+    }
+    m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
+    if (m_isContent) {
+        m_currentURL = m_hrefs.first();
+        m_hrefs.pop_front();
+        view->load(m_currentURL);
     }
 
-    rotateImages(rotateAction->isChecked());
+//    rotateImages(rotateAction->isChecked());
 }
 //! [6]
 
