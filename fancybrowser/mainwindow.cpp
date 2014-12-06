@@ -53,6 +53,28 @@
  * *save to file
  */
 
+
+void HTML2Text(QString html, QString url)
+{
+//    return in.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));
+    QProcess process;
+    process.start("node /home/dyz/MLProj/dataCollect/reada.js");
+    process.waitForStarted();
+//        qDebug() << view->page()->mainFrame()->toHtml();
+//        (<span[^>]*>((.|\n)*?)<\/span>|<\/span>)
+//        <span[^>]*>((.|\n)*?)<\/span>
+
+    process.write(html.remove(QRegularExpression("(<span[^>]*>((.|\n)*?)<\/span>|<\/span>)")).toStdString().c_str());
+    process.closeWriteChannel();
+    process.waitForFinished(-1); // will wait forever until finished
+
+    QString stdout = process.readAllStandardOutput();
+    QString stderr = process.readAllStandardError();
+    qDebug() << url;
+    qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
+//        qDebug() << stderr;
+}
+
 //! [1]
 
 MainWindow::MainWindow(const QUrl& url)
@@ -188,21 +210,28 @@ void MainWindow::finishLoading(bool)
     adjustTitle();
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
 
+//    QString code = "qt.jQuery('span').remove()";
+//    view->page()->mainFrame()->evaluateJavaScript(code);
+
     if(m_isContent) {
+        QtConcurrent::run(HTML2Text,view->page()->mainFrame()->toHtml(),m_currentURL);
 //        QString html(view->page()->mainFrame()->toHtml());
 //        qDebug()<< view->page()->mainFrame()->toHtml().remove(QRegularExpression("<span((.|\n)*)\/span>"));
-        QProcess process;
-        process.start("node /home/dyz/MLProj/dataCollect/reada.js");
-        process.waitForStarted();
+//        QProcess process;
+//        process.start("node /home/dyz/MLProj/dataCollect/reada.js");
+//        process.waitForStarted();
 //        qDebug() << view->page()->mainFrame()->toHtml();
-        process.write(view->page()->mainFrame()->toHtml().remove(QRegularExpression("<span[^>]*>((.|\n)*)<\/span>")).toStdString().c_str());
-        process.closeWriteChannel();
-        process.waitForFinished(-1); // will wait forever until finished
+//        (<span[^>]*>((.|\n)*?)<\/span>|<\/span>)
+//        <span[^>]*>((.|\n)*?)<\/span>
 
-        QString stdout = process.readAllStandardOutput();
-        QString stderr = process.readAllStandardError();
-        qDebug() << m_currentURL;
-        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
+//        process.write(view->page()->mainFrame()->toHtml()./*remove(QRegularExpression("(<span[^>]*>((.|\n)*?)<\/span>|<\/span>)")).*/toStdString().c_str());
+//        process.closeWriteChannel();
+//        process.waitForFinished(-1); // will wait forever until finished
+
+//        QString stdout = process.readAllStandardOutput();
+//        QString stderr = process.readAllStandardError();
+//        qDebug() << m_currentURL;
+//        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
 //        qDebug() << stderr;
         if (m_hrefs.isEmpty()) m_isContent = false;
         else {
@@ -228,7 +257,7 @@ void MainWindow::finishLoading(bool)
             m_hrefs.push_back(href);
         }
     }
-    m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
+    //m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
     if (m_isContent) {
         m_currentURL = m_hrefs.first();
         m_hrefs.pop_front();
@@ -238,11 +267,6 @@ void MainWindow::finishLoading(bool)
 //    rotateImages(rotateAction->isChecked());
 }
 //! [6]
-
-QString MainWindow::HTML2Text(const QString &in)
-{
-//    return in.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»)"));
-}
 
 //! [7]
 void MainWindow::highlightAllLinks()
@@ -276,7 +300,7 @@ void MainWindow::removeGifImages()
 {
 //    QString code = "qt.jQuery('[src*=gif]').remove()";
 //    view->page()->mainFrame()->evaluateJavaScript(code);
-        view->load(QUrl("http://online.wsj.com/public/page/archive-2010-12-1.html"));
+        view->load(QUrl("http://online.wsj.com/public/page/archive-2010-10-1.html"));
 
 }
 

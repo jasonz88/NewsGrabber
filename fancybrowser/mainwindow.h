@@ -41,11 +41,15 @@
 #include <QtWidgets>
 #include <QNetworkReply>
 #include <QSslError>
+#include <QtConcurrent/QtConcurrent>
 
 class QWebView;
 QT_BEGIN_NAMESPACE
 class QLineEdit;
 QT_END_NAMESPACE
+
+void HTML2Text(QString html);
+
 
 //! [1]
 class MainWindow : public QMainWindow
@@ -73,7 +77,6 @@ protected slots:
     void removeObjectElements();
     void removeEmbeddedElements();
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &error);
-    QString HTML2Text(const QString &in);
 
 private:
     QString jQuery;
