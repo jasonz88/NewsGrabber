@@ -27,7 +27,7 @@ process.stdin.on('end', function() {
   // Main Article
     console.log(article.content);
   // Title
-  //console.log(article.title);
+  console.log(article.title + ("00" + article.title.length).slice(-3));
 
   // HTML Source Code
   //console.log(article.html);

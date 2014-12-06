@@ -42,6 +42,8 @@
 #include <QtNetwork>
 #include <QtWebKitWidgets>
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
 #include "mainwindow.h"
 
 /*
@@ -71,18 +73,35 @@ void HTML2Text(QString html, QString url)
     QString stdout = process.readAllStandardOutput();
     QString stderr = process.readAllStandardError();
     qDebug() << url;
-    qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
+    qDebug() << stderr;
+    int titleLength = stdout.right(3).toInt();
+    int totalLength = stdout.length();
+    QString title = stdout.mid(totalLength-titleLength-4,titleLength);
+    QString realText = stdout.left(totalLength-titleLength-4).remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));
+
+    //QCoreApplication app(argc, argv);  //(we don't use these)
+
+    QFile file("/home/dyz/MLProjData/"+title+".txt");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << realText;//stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));
+
+    // optional, as QFile destructor will already do it:
+    file.close();
 //        qDebug() << stderr;
 }
 
 //! [1]
 
-MainWindow::MainWindow(const QUrl& url)
+MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& month)
     :m_isContent(false),
-      m_currentURL("")
+      m_year(year),
+      m_month(month),
+      m_currentURL(""),
+      m_urlLevel(1)
 {
     progress = 0;
-
+    qDebug() << year << month;
     QFile file;
     file.setFileName(":/jquery.min.js");
     file.open(QIODevice::ReadOnly);
@@ -214,55 +233,61 @@ void MainWindow::finishLoading(bool)
 //    view->page()->mainFrame()->evaluateJavaScript(code);
 
     if(m_isContent) {
-        QtConcurrent::run(HTML2Text,view->page()->mainFrame()->toHtml(),m_currentURL);
-//        QString html(view->page()->mainFrame()->toHtml());
-//        qDebug()<< view->page()->mainFrame()->toHtml().remove(QRegularExpression("<span((.|\n)*)\/span>"));
-//        QProcess process;
-//        process.start("node /home/dyz/MLProj/dataCollect/reada.js");
-//        process.waitForStarted();
-//        qDebug() << view->page()->mainFrame()->toHtml();
-//        (<span[^>]*>((.|\n)*?)<\/span>|<\/span>)
-//        <span[^>]*>((.|\n)*?)<\/span>
-
-//        process.write(view->page()->mainFrame()->toHtml()./*remove(QRegularExpression("(<span[^>]*>((.|\n)*?)<\/span>|<\/span>)")).*/toStdString().c_str());
-//        process.closeWriteChannel();
-//        process.waitForFinished(-1); // will wait forever until finished
-
-//        QString stdout = process.readAllStandardOutput();
-//        QString stderr = process.readAllStandardError();
-//        qDebug() << m_currentURL;
-//        qDebug() << stdout.remove(QRegularExpression("(<!--((.|\n)*?)-->|<[^>]*>|»|\n)"));;
-//        qDebug() << stderr;
-        if (m_hrefs.isEmpty()) m_isContent = false;
+//        QtConcurrent::run(HTML2Text,view->page()->mainFrame()->toHtml(),m_currentURL);
+        if (m_monthhrefs.isEmpty()) m_isContent = false;
         else {
-            m_currentURL = m_hrefs.first();
-            m_hrefs.pop_front();
+            m_currentURL = m_monthhrefs.first();
+            m_monthhrefs.pop_front();
             view->load(m_currentURL);
         }
         return;
     }
     view->setFocus();
 
-
-    QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#archivedArticles");
-    QWebElement element = collection.first();
-    QWebElementCollection coll = element.findAll("a");
-    foreach(QWebElement ele, coll)
-    {
-        QString href = ele.attribute("href");
-        if (!href.isEmpty())
+    if(1 == m_urlLevel) {
+        QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div.archiveMonth");
+        qDebug() << m_month << collection.count();
+        QWebElement element = collection[m_month.toInt()-1];
+        QWebElementCollection coll = element.findAll("a");
+        foreach(QWebElement ele, coll)
         {
-            qDebug() << href;
-            m_isContent = true;
-            m_hrefs.push_back(href);
+            QString href = ele.attribute("href");
+            if (!href.isEmpty())
+            {
+                qDebug() << href;
+                m_isContent = true;
+                m_monthhrefs.push_back(href);
+            }
         }
-    }
-    //m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
-    if (m_isContent) {
-        m_currentURL = m_hrefs.first();
-        m_hrefs.pop_front();
-        view->load(m_currentURL);
-    }
+        //m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
+        if (m_isContent) {
+            m_currentURL = m_monthhrefs.first();
+            m_monthhrefs.pop_front();
+            view->load(m_currentURL);
+        }
+
+    }/*
+    else {
+        QWebElementCollection collection = view->page()->mainFrame()->findAllElements("div#archivedArticles");
+        QWebElement element = collection.first();
+        QWebElementCollection coll = element.findAll("a");
+        foreach(QWebElement ele, coll)
+        {
+            QString href = ele.attribute("href");
+            if (!href.isEmpty())
+            {
+                qDebug() << href;
+                m_isContent = true;
+                m_hrefs.push_back(href);
+            }
+        }
+        //m_hrefs.push_front("http://online.wsj.com/news/articles/SB10001424052748704594804575648903868068536");
+        if (m_isContent) {
+            m_currentURL = m_hrefs.first();
+            m_hrefs.pop_front();
+            view->load(m_currentURL);
+        }
+    }*/
 
 //    rotateImages(rotateAction->isChecked());
 }

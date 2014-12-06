@@ -57,7 +57,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(const QUrl& url);
+    MainWindow(const QUrl& url, const QString& year, const QString& month);
+    QString m_month;
+    QString m_year;
 
 protected slots:
 
@@ -86,6 +88,8 @@ private:
     int progress;
     bool m_isContent;
     QString m_currentURL;
-    QList<QString> m_hrefs;
+    QList<QString> m_monthhrefs;
+    QList<QString> m_dayhrefs;
+    int m_urlLevel;
 //! [1]
 };
