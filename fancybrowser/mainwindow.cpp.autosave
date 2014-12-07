@@ -123,7 +123,7 @@ MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& mont
 //    view->load(url);
     connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
     connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
-    connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
+    //connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view->page()->mainFrame(), SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     connect(view->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),

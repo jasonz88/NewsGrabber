@@ -57,9 +57,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(const QUrl& url, const QString& year, const QString& month);
-    QString m_month;
+    MainWindow(const QUrl& url, const QString& year, const QString& month, const QString& outputPath);
     QString m_year;
+    QString m_month;
+    QString m_outputPath;
 
 protected slots:
 
@@ -86,8 +87,8 @@ private:
     QLineEdit *locationEdit;
     QAction *rotateAction;
     int progress;
-    bool m_isContent;
     QString m_currentURL;
+    QString m_currentFolder;
     QList<QString> m_monthhrefs;
     QList<QString> m_dayhrefs;
     int m_urlLevel;

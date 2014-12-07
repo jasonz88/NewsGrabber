@@ -66,14 +66,15 @@ int main(int argc, char * argv[])
     QStringList positionalArguments = commandLineParser.positionalArguments();
 
     QUrl url;
-    QString year,month;
-    if (positionalArguments.size() > 3) {
+    QString year,month,outputPath;
+    if (positionalArguments.size() > 4) {
         showHelp(commandLineParser, QStringLiteral("Too many arguments."));
         return -1;
-    } else if (positionalArguments.size() == 3) {
+    } else if (positionalArguments.size() == 4) {
         url = QUrl::fromUserInput(positionalArguments.at(0));
         year = positionalArguments.at(1);
         month = positionalArguments.at(2);
+        outputPath = positionalArguments.at(3);
     }
     else
         url = QUrl("http://query.nytimes.com/search/sitesearch/#/crude+oil/from20100502to20100602/allresults/1/allauthors/relevance/business");
@@ -83,7 +84,7 @@ int main(int argc, char * argv[])
         return -1;
     }
 
-    MainWindow browser(url,year,month);
+    MainWindow browser(url,year,month,outputPath);
     browser.show();
     return app.exec();
 }
