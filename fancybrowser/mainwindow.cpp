@@ -89,16 +89,17 @@ void HTML2Text(QString html, QString title)
 
 //! [1]
 
-MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& month, const QString& outputPath)
+MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& month, int day, const QString& outputPath)
     : m_year(year),
       m_month(month),
+      m_day(day),
       m_outputPath(outputPath),
       m_currentURL(""),
       m_currentFolder(""),
       m_urlLevel(0)
 {
     progress = 0;
-    qDebug() << "year: " << m_year << "month: " << m_month;
+    qDebug() << "year: " << m_year << "month: " << m_month << m_day;
     m_outputPath = m_outputPath + "/" + m_year + "/" + m_month;
     QStringList arguments = QStringList() << "-p" << m_outputPath;
     qDebug() << "outputPath:" << m_outputPath;
@@ -122,8 +123,8 @@ MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& mont
     view->load(QUrl("http://online.wsj.com"));
 //    view->load(url);
     connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
-    connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
-    connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
+    //connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
+    //connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view->page()->mainFrame(), SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     connect(view->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
@@ -250,6 +251,10 @@ void MainWindow::finishLoading(bool)
                         qDebug() << href;
                         m_monthhrefs.push_back(href);
                     }
+                }
+                int i = 1;
+                while (i++ < m_day) {
+                    m_monthhrefs.pop_front();
                 }
                 m_currentURL = m_monthhrefs.first();
                 m_monthhrefs.pop_front();

@@ -57,9 +57,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(const QUrl& url, const QString& year, const QString& month, const QString& outputPath);
+    MainWindow(const QUrl& url, const QString& year, const QString& month, int day, const QString& outputPath);
     QString m_year;
     QString m_month;
+    int m_day;
     QString m_outputPath;
 
 protected slots:
