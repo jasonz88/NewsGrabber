@@ -48,8 +48,20 @@ QT_BEGIN_NAMESPACE
 class QLineEdit;
 QT_END_NAMESPACE
 
+class MainWindow;
+
 void HTML2Text(QString html);
 
+
+class MainWindowCreator {
+
+    public:
+        virtual MainWindow* create(QUrl& url,  QString& year,  QString& month, int& day,  QString& outputPath, QList<QString> &monthhrefs, QList<QString>& dayhrefs, QString& currentURL, int& urlLevel);
+        virtual void destroy();
+
+    private:
+        MainWindow *m_mainWindow;
+};
 
 //! [1]
 class MainWindow : public QMainWindow
@@ -57,11 +69,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow( const QUrl& url,  const QString& year, const QString& month, int day, const QString& outputPath);
-    QString m_year;
-    QString m_month;
-    int m_day;
-    QString m_outputPath;
+    MainWindow( QUrl& url,  QString& year,  QString& month, int& day,  QString& outputPath, QList<QString> &monthhrefs, QList<QString>& dayhrefs, QString& currentURL, int& urlLevel);
+    QString& m_year;
+    QString& m_month;
+    int& m_day;
+    QString& m_outputPath;
 
 protected slots:
 
@@ -89,14 +101,15 @@ private:
     QLineEdit *locationEdit;
     QAction *rotateAction;
     int progress;
-    QString m_currentURL;
+    QString& m_currentURL;
     QString m_currentFolder;
-    QList<QString> m_monthhrefs;
-    QList<QString> m_dayhrefs;
-    int m_urlLevel;
+    QList<QString>& m_monthhrefs;
+    QList<QString>& m_dayhrefs;
+    int& m_urlLevel;
+    int m_login;
     bool m_loaded;
     QEventLoop m_loop;
     QTimer *m_timer;
-    int m_login;
+    bool m_closing;
 //! [1]
 };

@@ -87,24 +87,39 @@ void HTML2Text(QString html, QString title)
 //        qDebug() << stderr;
 }
 
+
+MainWindow* MainWindowCreator::create(QUrl& url, QString& year, QString& month, int& day, QString& outputPath, QList<QString> &monthhrefs, QList<QString>& dayhrefs, QString& currentURL, int& urlLevel)
+{
+    m_mainWindow = new MainWindow(url,year,month,day,outputPath,monthhrefs,dayhrefs,currentURL,urlLevel);
+    return m_mainWindow;
+}
+
+void MainWindowCreator::destroy()
+{
+    delete m_mainWindow;
+    m_mainWindow = NULL;
+}
+
+
 //! [1]
 
-MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& month, int day, const QString& outputPath)
+MainWindow::MainWindow(QUrl& url, QString& year, QString& month, int& day, QString& outputPath, QList<QString>& monthhrefs, QList<QString>& dayhrefs , QString& currentURL, int& urlLevel)
     : m_year(year),
       m_month(month),
       m_day(day),
       m_outputPath(outputPath),
-      m_currentURL(""),
       m_currentFolder(""),
-      m_urlLevel(0),
       m_loaded(false),
-      m_timer(new QTimer(this)),
-      m_login(0)
+      m_monthhrefs(monthhrefs),
+      m_dayhrefs(dayhrefs),
+      m_currentURL(currentURL),
+      m_urlLevel(urlLevel),
+      m_login(-1),
+      m_closing(false)
 {
     progress = 0;
-    m_timer->setSingleShot(true);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(reload()));
-
+    qDebug() << "loop";
+    m_day++;
     qDebug() << "year: " << m_year << "month: " << m_month << m_day;
     m_outputPath = m_outputPath + "/" + m_year + "/" + m_month;
     QStringList arguments = QStringList() << "-p" << m_outputPath;
@@ -126,11 +141,11 @@ MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& mont
 
 //! [2]
     view = new QWebView(this);
-    view->load(QUrl("http://online.wsj.com/login.html"));
+    view->load(QUrl("http://online.wsj.com"));//"http://online.wsj.com/login.html"));
 //    view->load(url);
-//    connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
-    //connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
-    //connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
+    connect(view, SIGNAL(loadFinished(bool)), SLOT(adjustLocation()));
+    connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
+    connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view->page()->mainFrame(), SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
 
     connect(view->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
@@ -178,7 +193,8 @@ MainWindow::MainWindow(const QUrl& url, const QString& year, const QString& mont
 void MainWindow::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)
 {
     // check if SSL certificate has been trusted already
-    QString replyHost = reply->url().host() + QString(":%1").arg(reply->url().port());
+    qDebug() << "ssl error!";
+//    QString replyHost = reply->url().host() + QString(":%1").arg(reply->url().port());
     reply->ignoreSslErrors();
 }
 
@@ -235,8 +251,9 @@ void MainWindow::setProgress(int p)
 
 void MainWindow::reload()
 {
-    m_timer->stop();
-    finishLoading(true);
+    view->load(QUrl("http://online.wsj.com/logout"));
+    m_closing = true;
+//    close();
 }
 
 //! [6]
@@ -245,26 +262,44 @@ void MainWindow::finishLoading(bool)
     progress = 100;
     adjustTitle();
     view->page()->mainFrame()->evaluateJavaScript(jQuery);
-
-//    QString code = "qt.jQuery('span').remove()";
-//    view->page()->mainFrame()->evaluateJavaScript(code);
-
-    if(0 == m_login) {
-            QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, 0,Qt::NoModifier,"dongyangz@nvidia.com");
-            QCoreApplication::postEvent (view, event);
-            event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Tab,Qt::NoModifier);
-            QCoreApplication::postEvent (view, event);
-            event = new QKeyEvent ( QEvent::KeyPress, 0,Qt::NoModifier,"cs229");
-            QCoreApplication::postEvent (view, event);
-            event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter,Qt::NoModifier);
-            QCoreApplication::postEvent (view, event);
-            m_login++;
-            return;
-        } else if (1 == m_login) {
-                m_login++;
-                view->load(QUrl("http://online.wsj.com/public/page/archive-"+m_year+"-"+m_month+"-1.html"));
-                return;
+    if(m_closing) close();
+    if (-1 == m_login) {
+        view->load(QUrl("http://online.wsj.com/login.html"));
+        m_login++;
+        return;
+    }else if(0 == m_login) {
+        QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, 0,Qt::NoModifier,"dongyangz@nvidia.com");
+        QCoreApplication::postEvent (view, event);
+        event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Tab,Qt::NoModifier);
+        QCoreApplication::postEvent (view, event);
+        event = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_Tab,Qt::NoModifier);
+        QCoreApplication::postEvent (view, event);
+        event = new QKeyEvent ( QEvent::KeyPress, 0,Qt::NoModifier,"cs229");
+        QCoreApplication::postEvent (view, event);
+//        QEventLoop loop;
+//        QTimer::singleShot(3000, &loop, SLOT(quit()));
+//        loop.exec();
+        event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter,Qt::NoModifier);
+        QCoreApplication::postEvent (view, event);
+        event = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_Enter,Qt::NoModifier);
+        QCoreApplication::postEvent (view, event);
+        m_login++;
+        return;
+    } else if (1 == m_login) {
+        m_login++;
+        QTimer::singleShot(10000,this,SLOT(reload()));
+        if(false == m_loaded) {
+            view->load(QUrl("http://online.wsj.com/public/page/archive-"+m_year+"-"+m_month+"-1.html"));
+            m_loaded = true;
+        } else {
+//            m_timer = new QTimer(this);
+//            m_timer->setSingleShot(true);
+//            connect(m_timer,SIGNAL(timeout()),this,SLOT(reload()));
+//            m_timer->start(10000);
+            view->load(m_currentURL);
         }
+        return;
+    }
 
     if(0 == m_urlLevel) {
         QWebElementCollection archiveMonth = view->page()->mainFrame()->findAllElements("div.archiveMonth");
@@ -314,7 +349,6 @@ void MainWindow::finishLoading(bool)
                             m_dayhrefs.push_back(href);
                         }
                     }
-                    // optional, as QFile destructor will already do it:
                     file.close();
                     m_currentURL = m_dayhrefs.first();
                     m_dayhrefs.pop_front();
@@ -323,7 +357,6 @@ void MainWindow::finishLoading(bool)
             }
         } else {
                 QtConcurrent::run(HTML2Text,view->page()->mainFrame()->toHtml(), m_outputPath+"/"+m_currentFolder+"/"+view->page()->mainFrame()->title());
-//        HTML2Text(view->page()->mainFrame()->toHtml(), m_outputPath+"/"+m_currentFolder+"/"+view->page()->mainFrame()->title());
                 if (m_dayhrefs.isEmpty()) {
                     m_urlLevel--;
                     if (m_monthhrefs.isEmpty()) {
@@ -338,17 +371,12 @@ void MainWindow::finishLoading(bool)
                         QProcess process;
                         process.start("mkdir",arguments);
                         process.waitForFinished(-1); // will wait forever until finished
-                        if(m_timer->isActive())
-                            m_timer->stop();
-                        m_timer->start(3000);
                         view->load(m_currentURL);
                     }
                 }
                 else {
                     m_currentURL = m_dayhrefs.first();
                     m_dayhrefs.pop_front();
-//                    QTimer::singleShot(3000, this, SLOT(reload()));
-//                    m_loaded = false;
                     view->load(m_currentURL);
                 }
         }
@@ -385,12 +413,7 @@ void MainWindow::rotateImages(bool invert)
 //! [9]
 void MainWindow::removeGifImages()
 {
-    if(false == m_loaded) {
-        view->load(QUrl("http://online.wsj.com/public/page/archive-"+m_year+"-"+m_month+"-1.html"));
-        m_loaded = true;
-    } else {
-        view->load(m_currentURL);
-    }
+
 
 }
 
