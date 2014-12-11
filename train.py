@@ -16,4 +16,4 @@ vectorizer = TfidfVectorizer(input='filename',stop_words='english',min_df=15)
 dtm = vectorizer.fit_transform(filenames)  # a sparse matrix
 vocab = vectorizer.get_feature_names()  # a list
 
-print vectorizer.get_stop_words()
+print dtm

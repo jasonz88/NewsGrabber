@@ -1,6 +1,4 @@
 import numpy as np  # a conventional alias
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfVectorizer
 import shutil
 import os,sys,glob
 
