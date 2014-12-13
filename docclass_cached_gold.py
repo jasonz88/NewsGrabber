@@ -26,6 +26,7 @@ from sklearn.preprocessing import normalize
 import shutil
 import os,sys,glob
 import pickle
+from math import sqrt
 
 # Display progress logs on stdout
 logging.basicConfig(level=logging.INFO,
@@ -59,6 +60,12 @@ op.add_option("--use_tfidf",
 op.add_option("--n_clusters",
               action="store", type=int, default=8,
               help="n_clusters when using the k-means clustering.")
+op.add_option("--n_fold",
+              action="store", type=int, default=4,
+              help="n_fold - 1 fold for training and 1 for testing.")
+op.add_option("--shockThreshold",
+              action="store", type=float, default=0.10,
+              help="minimal norm of price change vector to be considered shock")
 op.add_option("--n_features",
               action="store", type=int, default=500,
               help="n_features when using the hashing vectorizer.")
@@ -99,72 +106,151 @@ else:
         'pattern_5',
         'pattern_6',
         'pattern_7',
+        'pattern_8',
+        'pattern_9',
+        'pattern_10',
+        'pattern_11',
+        'pattern_12',
+        'pattern_13',
+        'pattern_14',
     ]
+    categories = categories[:opts.n_clusters]
 
 # if opts.filtered:
 #     remove = ('headers', 'footers', 'quotes')
 # else:
 #     remove = ()
 
-# print("Loading 20 newsgroups dataset for categories:")
-# print(categories if categories else "all")
 
+#filenames = tuple(open(sys.argv[1],'r'))
+ins = open('gold-historical-data.txt', "r" )
+linesInFile = []
+for line in ins:
+	linesInFile.append(line[:-1])
+ins.close()
 
+jumps = []
+i = 3
+for line in linesInFile[3:-3]:
+	fiveDays = []
+	for j in range(5):
+		today = linesInFile[i-2+j].split(' ')[2].split('\t')
+		yesterday = linesInFile[i-1+j].split(' ')[2].split('\t')
+		todayLast = float(today[1])
+		todayOpen = float(today[2])
+		todayHigh = float(today[3])
+		todayLow = float(today[4])
+		if today[5] == '-':
+			todayVol = float(0)
+		else:
+			todayVol = float(today[5][:-1])
+		todayPer = float(today[6][:-1])
+		yesterLast = float(yesterday[1])
+		yesterOpen = float(yesterday[2])
+		yesterHigh = float(yesterday[3])
+		yesterLow = float(yesterday[4])
+		if yesterday[5] == '-':
+			yesterVol = float(0)
+		else:
+			yesterVol = float(yesterday[5][:-1])
+		yesterPer = float(yesterday[6][:-1])
+		fiveDays.append(todayOpen-yesterLast)
+		fiveDays.append((todayVol-yesterVol))
+		fiveDays.append(todayHigh-todayLow)
+		fiveDays.append(todayPer)
+	jumps.append(fiveDays)
+	i = i + 1
 
-km = KMeans(n_clusters=opts.n_clusters, init='k-means++', max_iter=500, n_init=1,
-                verbose=0, n_jobs=-1)
-import yTotalData
-def normalizeInput(y):
-	n = len(y[0])
-	m = len(y)
-	for i in range(m):
-		y[i][1] = y[i][1] - y[i][0]
-		y[i][2] = y[i][2] - y[i][0]
-	for j in range(n):
-		mSum = 0
-		mMin = 9999
-		mMax = -9999
-		for i in range(m):
-			mSum = mSum + y[i][j]
-			if mMin > y[i][j]:
-				mMin = y[i][j]
-			if mMax < y[i][j]:
-				mMax = y[i][j]
-		mAvg = mSum / m
-		mRange = mMax - mMin
-		for i in range(m):
-			y[i][j] = (y[i][j] - mAvg) / mRange
-	return y
+# km = KMeans(n_clusters=8, init='k-means++', max_iter=500, n_init=10,
+#                 verbose=0, n_jobs=-1)
 
 # yTotalDataNormed = normalizeInput(yTotalData.yTotalData)
-yTotalDataNormed = normalize(yTotalData.yTotalData, axis=0, norm='l1')
+yTotalDataNormed = normalize(jumps, axis=0, norm='l2')
 
-# print(yTotalDataNormed)
-# sys.exit(1)
-km.fit(yTotalDataNormed[::-1])
+minNorm = 999
+maxNorm = -999
+for line in yTotalDataNormed:
+	curNorm = sqrt(sum(s**2 for s in line))
+	if minNorm > curNorm:
+		minNorm = curNorm
+	if maxNorm < curNorm:
+		maxNorm = curNorm
+
+shockDays = []
+shockDaysWithNews = []
+shockDaysNews = []
+dictMonth = {'Dec': 12, 'Nov': 11, 'Oct': 10, 'Sep': 9, 'Aug': 8, 'Jul': 7, 'Jun': 6, 'May': 5, 'Apr': 4, 'Mar': 3, 'Feb': 2, 'Jan': 1}
+
+filenames = []
+Datadir = '../Data'
+startday = 2
+for subdir, dirs, files in os.walk(Datadir):
+	if '-' not in subdir:
+		continue
+	if os.path.isfile(subdir+'/out.data'):
+		filenames.append(subdir+'/out.data')
+
+def date_compare(x, y):
+		if int(x.split('/')[4].split('-')[1]) == int(y.split('/')[4].split('-')[1]):
+			return int(x.split('/')[4].split('-')[2]) - int(y.split('/')[4].split('-')[2])
+		return int(x.split('/')[4].split('-')[1]) - int(y.split('/')[4].split('-')[1])
+
+filenames.sort(date_compare)
+
+
+lineNumber = 0
+lookUpTable = {}
+l1 = -1
+l2 = -1
+for line in yTotalDataNormed:
+	curNorm = sqrt(sum(s**2 for s in line))
+	if curNorm > opts.shockThreshold:
+		shockDays.append(line)
+		l1 = l1 + 1
+		ind = lineNumber
+		sample = linesInFile[ind+1]
+		year = sample.split(' ')[2].split('\t')[0]
+		month = str(dictMonth[sample.split(' ')[0]])
+		day = str(int(sample.split(' ')[1][:-1]))
+		if int(year) > 2009 and int(year) < 2015:
+			shockDaysWithNews.append(line)
+			l2 = l2 + 1
+			lookUpTable[l2] = l1
+			inds = filenames.index(Datadir+'/'+year+'/'+month+'/'+year+'-'+month+'-'+day+'/out.data')
+			shockDaysNews.append(filenames[inds]+'.sk')
+			outfile = open(shockDaysNews[-1], 'wb')
+			for i in range(-2,3):
+				if inds + i < 0 or inds + i > len(filenames) - 1:
+					continue
+				with open(filenames[inds+i], 'rb') as readfile:
+					shutil.copyfileobj(readfile, outfile)
+	lineNumber = lineNumber + 1
+
+print("shock days: %d, shock days with news: %d" % (len(shockDays), len(shockDaysWithNews)))
+
+
+km = KMeans(n_clusters=opts.n_clusters, init='k-means++', max_iter=500, n_init=20,
+                verbose=0, n_jobs=-1)
+
+km.fit(shockDays)
 y_total = km.labels_
 cc = km.cluster_centers_
 
-y_train = y_total[486:]
-y_test = y_total[234:486]
+y_train = []
+y_test = []
 
 trainingfilenames = []
 testfilenames = []
-for i in range(4):
-	#filenames = tuple(open(sys.argv[1],'r'))
-	ins = open( 'doc201'+str(i)+'.txt', "r" )
 
-	for line in ins:
-	    trainingfilenames.append( line[:-1] )
-	ins.close()
+for i in range(len(shockDaysWithNews)):
+	if i % opts.n_fold == 0:
+		y_test.append(y_total[lookUpTable[i]])
+		testfilenames.append(shockDaysNews[i])
+	else:
+		y_train.append(y_total[lookUpTable[i]])
+		trainingfilenames.append(shockDaysNews[i])
 
-ins = open( 'doc2014.txt', "r" )
-
-for line in ins:
-    testfilenames.append( line[:-1] )
-ins.close()
-
-print('data loaded')
+print('data loaded training size: %d, testing size: %d' % (len(y_train), len(y_test)))
 
 # categories = data_train.target_names    # for case categories == None
 
@@ -198,16 +284,14 @@ if opts.cached_data:
 else:
 	t0 = time()
 	if opts.use_tfidf:
-	    vectorizer = TfidfVectorizer(input='filename',sublinear_tf=True, max_df=0.5,
+	    vectorizer = TfidfVectorizer(input='filename',sublinear_tf=True, max_df=0.8,
 	                                 stop_words='english')
 	elif opts.use_hashing:
 		vectorizer = HashingVectorizer(input='filename',stop_words='english',min_df=15,non_negative=True,
 	                                   n_features=opts.n_features)
 	else:
-		vectorizer = CountVectorizer(input='filename',stop_words='english',min_df=15,max_df=0.5)
-	X_total = vectorizer.fit_transform(trainingfilenames)
-	X_train = X_total[:756]
-	X_test = X_total[756:]
+		vectorizer = CountVectorizer(input='filename',stop_words='english',min_df=5,max_df=0.8)
+	X_train = vectorizer.fit_transform(trainingfilenames)
 	duration = time() - t0
 	fd = open('X_train.txt','w')
 	pickle.dump(X_train,fd)
@@ -221,10 +305,10 @@ else:
 	print("n_samples: %d, n_features: %d" % X_train.shape)
 	print()
 
-	# print("Extracting features from the test dataset using the same vectorizer")
-	# t0 = time()
-	# X_test = vectorizer.transform(testfilenames)
-	# duration = time() - t0
+	print("Extracting features from the test dataset using the same vectorizer")
+	t0 = time()
+	X_test = vectorizer.transform(testfilenames)
+	duration = time() - t0
 	fd = open('X_test.txt','w')
 	pickle.dump(X_test,fd)
 	fd.close()
@@ -256,7 +340,7 @@ if opts.select_chi2:
 
 def trim(s):
     """Trim string to fit on terminal (assuming 80-column display)"""
-    return s if len(s) <= 80 else s[:77] + "..."
+    return s if len(s) <= 120 else s[:77] + "..."
 
 
 # mapping from integer feature name to original token string
